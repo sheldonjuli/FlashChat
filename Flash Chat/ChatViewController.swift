@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class ChatViewController: UIViewController {
+class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // Declare instance variables here
 
@@ -25,8 +25,9 @@ class ChatViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //TODO: Set yourself as the delegate and datasource here:
-        
+        //Set ChatViewController as the delegate and datasource
+        messageTableView.delegate = self
+        messageTableView.dataSource = self
         
         
         //TODO: Set yourself as the delegate of the text field here:
@@ -37,8 +38,10 @@ class ChatViewController: UIViewController {
         
         
 
-        //TODO: Register your MessageCell.xib file here:
-
+        //Register custom cell MessageCell.xib file
+        messageTableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "customMessageCell")
+        
+        configureTableView()
         
     }
 
@@ -48,11 +51,22 @@ class ChatViewController: UIViewController {
     
     
     
-    //TODO: Declare cellForRowAtIndexPath here:
+    //Declare cellForRowAtIndexPath
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: "customMessageCell", for: indexPath) as! CustomMessageCell
+        let messageArray = ["First Message", "Second Message", "Third Message"]
+        cell.messageBody.text = messageArray[indexPath.row]
+        return cell
+
+    }
     
-    
-    
-    //TODO: Declare numberOfRowsInSection here:
+    //Declare numberOfRowsInSection
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+
+        return 3
+
+    }
     
     
     
@@ -61,7 +75,12 @@ class ChatViewController: UIViewController {
     
     
     //TODO: Declare configureTableView here:
-    
+    func configureTableView() {
+        
+        messageTableView.rowHeight = UITableViewAutomaticDimension
+        messageTableView.estimatedRowHeight = 120.0
+
+    }
     
     
     ///////////////////////////////////////////
