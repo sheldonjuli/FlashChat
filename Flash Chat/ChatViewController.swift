@@ -9,8 +9,12 @@
 import UIKit
 import Firebase
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
+    // Declare constants
+    let KEYBOARD_HEIGHT = 258.0
+    let TEXTFIELD_HEIGHT = 50.0
+
     // Declare instance variables here
 
     
@@ -30,12 +34,13 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         messageTableView.dataSource = self
         
         
-        //TODO: Set yourself as the delegate of the text field here:
+        //Set ChatViewController as the delegate of the text field
+        messageTextfield.delegate = self
 
         
-        
-        //TODO: Set the tapGesture here:
-        
+        //Set the tapGesture, used to drop text field when editing is completed
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(tableViewTapped))
+        messageTableView.addGestureRecognizer(tapGesture)
         
 
         //Register custom cell MessageCell.xib file
@@ -70,8 +75,10 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     
-    //TODO: Declare tableViewTapped here:
-    
+    //Declare tableViewTapped
+    @objc func tableViewTapped() {
+        messageTextfield.endEditing(true)
+    }
     
     
     //TODO: Declare configureTableView here:
@@ -86,17 +93,25 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     ///////////////////////////////////////////
     
     //MARK:- TextField Delegate Methods
-    
-    
 
+    //Declare textFieldDidBeginEditing, automatically triggered
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+
+        UIView.animate(withDuration: 0.5) {
+            self.heightConstraint.constant = CGFloat(self.KEYBOARD_HEIGHT + self.TEXTFIELD_HEIGHT)
+            self.view.layoutIfNeeded() // refresh
+        }
+    }
     
-    //TODO: Declare textFieldDidBeginEditing here:
     
-    
-    
-    
-    //TODO: Declare textFieldDidEndEditing here:
-    
+    //Declare textFieldDidEndEditing, triggered when user tab above text field
+    func textFieldDidEndEditing(_ textField: UITextField) {
+
+        UIView.animate(withDuration: 0.5) {
+            self.heightConstraint.constant = CGFloat(self.TEXTFIELD_HEIGHT)
+            self.view.layoutIfNeeded() // refresh
+        }
+    }
 
     
     ///////////////////////////////////////////
