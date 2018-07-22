@@ -120,9 +120,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     //MARK: - Send & Recieve from Firebase
     
     
-    
-    
-    
+
     @IBAction func sendPressed(_ sender: AnyObject) {
         
         
@@ -133,11 +131,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     //TODO: Create the retrieveMessages method here:
     
-    
 
-    
-    
-    
     @IBAction func logOutPressed(_ sender: AnyObject) {
         
         //TODO: Log out the user and send them back to WelcomeViewController
