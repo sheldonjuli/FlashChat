@@ -16,7 +16,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     let TEXTFIELD_HEIGHT = 50.0
 
     // Declare instance variables here
-
+    var messageArray : [Message] = [Message]()
     
     // We've pre-linked the IBOutlets
     @IBOutlet var heightConstraint: NSLayoutConstraint!
@@ -48,6 +48,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         configureTableView()
         
+        retrieveMessages()
+        
     }
 
     ///////////////////////////////////////////
@@ -60,8 +62,9 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "customMessageCell", for: indexPath) as! CustomMessageCell
-        let messageArray = ["First Message", "Second Message", "Third Message"]
-        cell.messageBody.text = messageArray[indexPath.row]
+        cell.senderUsername.text = messageArray[indexPath.row].sender
+        cell.messageBody.text = messageArray[indexPath.row].messageBody
+        cell.avatarImageView.image = UIImage(named: "egg")
         return cell
 
     }
@@ -69,7 +72,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     //Declare numberOfRowsInSection
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 
-        return 3
+        return messageArray.count
 
     }
     
@@ -149,7 +152,26 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    //TODO: Create the retrieveMessages method here:
+    //Create the retrieveMessages method
+    func retrieveMessages() {
+        let messageDB = Database.database().reference().child("Messages")
+        
+        messageDB.observe(.childAdded, with: { (snapshot) in
+            let snapshotValue = snapshot.value as! Dictionary<String, String>
+            let sender = snapshotValue["Sender"]!
+            let messageBody = snapshotValue["MessageBody"]!
+            
+            let message = Message()
+            message.messageBody = messageBody
+            message.sender = sender
+            
+            self.messageArray.append(message)
+            
+            //refresh everytime a new message is sent
+            self.configureTableView()
+            self.messageTableView.reloadData()
+        })
+    }
     
 
     @IBAction func logOutPressed(_ sender: AnyObject) {
